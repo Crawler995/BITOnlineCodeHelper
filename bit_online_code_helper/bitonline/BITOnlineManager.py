@@ -5,6 +5,7 @@ from bit_online_code_helper.bitonline.LocalTestCodeManager import *
 from bit_online_code_helper.bitonline.OnlineTestCodeManager import *
 from bit_online_code_helper.log.LogManager import *
 import pickle
+import os
 
 
 class _BITOnlineManager:
@@ -25,7 +26,7 @@ class _BITOnlineManager:
         self.__commit_online_manager.set_session(self.__session)
 
         self.__is_login = False
-        self.__cookie_file_path = './cookies.bch'
+        self.__cookie_file_path = os.path.expanduser('~') + '\\.bchd'
 
         self.__load_cookie()
 

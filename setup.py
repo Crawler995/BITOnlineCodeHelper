@@ -4,7 +4,7 @@ description_file = open('README.md', 'r', encoding='utf-8')
 
 setuptools.setup(
     name='BIT Online Code Helper',
-    version='1.0.2',
+    version='1.0.3',
     description='Test your code of "BIT Online coding homework" more easily and conveniently!',
     long_description=description_file.read(),
     long_description_content_type='text/markdown',
@@ -15,8 +15,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     license='MIT',
     classifiers=[
-        'Programming Language :: Python :: 3.7',
-        'Operating System :: OS Independent'
+        'Programming Language :: Python :: 3.7'
     ],
     install_requires=[
         'requests',
