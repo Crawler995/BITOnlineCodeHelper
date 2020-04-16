@@ -63,6 +63,10 @@ class _ProblemManager:
             problem.title = self.__get_problem_title(problem_page_text)
             problem.deadline = self.__get_problem_deadline(problem_page_text)
             problem.test_cases_and_results = self.__get_problem_test_cases(problem_page_text)
+
+            info_output(problem.title)
+            divide_line()
+
             return problem
 
         except:

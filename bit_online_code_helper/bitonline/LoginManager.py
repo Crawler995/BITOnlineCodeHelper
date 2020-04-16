@@ -30,7 +30,7 @@ class _LoginManager:
 
         try:
             login_page = self.__session.get(self.__login_url, headers=self.__headers)
-            if '北理在线 - 网络教室' in login_page.text:
+            if '网络教室' in login_page.text:
                 self.__is_login = True
                 tip(LoginLogs.HAS_LOGIN)
                 return
@@ -51,7 +51,7 @@ class _LoginManager:
             }
 
             bit_online_page = self.__session.post(self.__login_url, data=data, headers=self.__headers)
-            if '北理在线 - 网络教室' in bit_online_page.text:
+            if '网络教室' in bit_online_page.text:
                 self.__is_login = True
                 tip(LoginLogs.LOGIN_SUCCESS)
             else:

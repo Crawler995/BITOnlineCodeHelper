@@ -1,5 +1,7 @@
 import subprocess
 import os
+import time
+
 from bit_online_code_helper.log.LogManager import *
 from tqdm import tqdm
 
@@ -13,7 +15,7 @@ class _LocalTestCodeManager:
         self.__remove_existed_exe()
 
         if not os.path.exists(source_file_path):
-            tip(LocalTestCodeLogs.SOURCE_FILE_NOT_FOUND)
+            tip(LocalTestCodeLogs.SOURCE_FILE_NOT_FOUND_FAILED)
             return False
 
         tip(LocalTestCodeLogs.COMPILE_PENDING)
@@ -27,6 +29,7 @@ class _LocalTestCodeManager:
             return False
         else:
             tip(LocalTestCodeLogs.COMPILE_SUCCESS)
+            divide_line()
             return True
 
     def __local_test_code(self, problem_info):
@@ -36,6 +39,7 @@ class _LocalTestCodeManager:
 
         index = 1
         test_failed_case_index = []
+        your_wrong_output = []
         pbar = tqdm(total=len(problem_info.test_cases_and_results),
                     unit='cases')
 
@@ -47,6 +51,7 @@ class _LocalTestCodeManager:
             is_case_pass = out.decode() == test_case['result']
             if not is_case_pass:
                 test_failed_case_index.append(index)
+                your_wrong_output.append(out.decode())
                 is_pass = False
 
             index += 1
@@ -54,19 +59,26 @@ class _LocalTestCodeManager:
             test_process.terminate()
 
         pbar.close()
+        time.sleep(1)
+
         if is_pass:
             tip(LocalTestCodeLogs.TEST_SUCCESS)
+            divide_line()
         else:
-            tip(LocalTestCodeLogs.TEST_FAILURE_CASE)
+            tip(LocalTestCodeLogs.TEST_FAILED_CASE)
             for index in test_failed_case_index:
-                print(index, end=' ')
-            print('')
+                print('第%d个用例：' % index)
+                print('输入：')
+                print(problem_info.test_cases_and_results[index - 1]['test_case'], end='')
+                print('期望输出：')
+                print(problem_info.test_cases_and_results[index - 1]['result'], end='')
+                print('你的输出：')
+                print(your_wrong_output[index - 1])
+                divide_line()
 
-        divide_line()
         return is_pass
 
     def run(self, source_file_path, problem_info):
-        print(problem_info.title + '\n')
         if self.__compile_source_file(source_file_path):
             return self.__local_test_code(problem_info)
         return False

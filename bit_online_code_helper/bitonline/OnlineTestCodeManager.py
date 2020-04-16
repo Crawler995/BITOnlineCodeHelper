@@ -28,6 +28,26 @@ class _OnlineTestCodeManager:
         if self.__commit_online(source_file_path, problem_url):
             self.__is_commit_pass(problem_url)
 
+    def __get_online_support_language(self, commit_page_text):
+        regx = re.compile('<option value="(\\d+)">(.+?)</option>')
+        return regx.findall(commit_page_text)
+
+    def __get_language_type(self, commit_page_text, source_file_path):
+        source_file_ext_name = source_file_path.split('.')[-1]
+
+        # e.g. [('1', 'C (GCC 3.3)'), ('2', 'C++ (G++ 3.3)')]
+        online_support_language = self.__get_online_support_language(commit_page_text)
+
+        type_map = [('c', 'C'), ('cpp', 'C++')]
+
+        for local_support_type in type_map:
+            if source_file_ext_name == local_support_type[0]:
+                for online_support_type in online_support_language:
+                    if local_support_type[1] in online_support_type[1]:
+                        return online_support_type[0]
+
+        return '-1'
+
     def __commit_online(self, source_file_path, problem_url):
         tip(OnlineTestCodeLogs.COMMIT_START)
 
@@ -39,17 +59,23 @@ class _OnlineTestCodeManager:
             commit_page_text = self.__session.get(commit_page_url, headers=self.__headers).text
 
             if '时间已到' in commit_page_text:
-                tip(OnlineTestCodeLogs.DEADLINE_PASS)
+                tip(OnlineTestCodeLogs.DEADLINE_PASS_FAILED)
                 return False
 
             for item in data_item:
                 data[item] = self.__get_post_data(item, commit_page_text)
 
+            self.__get_language_type(commit_page_text, source_file_path)
+
             data['id'] = re.compile('php\\?id=(\\d+)').findall(commit_page_url)[0]
             data['code'] = open(source_file_path, 'rb').read().decode()
-            data['language'] = '1'
+            language = self.__get_language_type(commit_page_text, source_file_path)
+            if language == '-1':
+                tip(OnlineTestCodeLogs.NOT_SUPPORT_LANGUAGE_FAILED)
+                return False
+            data['language'] = language
 
-            commit_url = 'http://online.bit.edu.cn/moodle/mod/programming/submit.php'
+            commit_url = 'http://lexue.bit.edu.cn/mod/programming/submit.php'
             self.__session.post(commit_url, data=data, headers=self.__headers)
             tip(OnlineTestCodeLogs.COMMIT_SUCCESS)
             divide_line()
@@ -57,7 +83,7 @@ class _OnlineTestCodeManager:
             return True
 
         except:
-            tip(OnlineTestCodeLogs.COMPILE_FAILED)
+            tip(OnlineTestCodeLogs.COMPIT_FAILED)
             return False
 
     def __get_compile_status(self, test_res_page_text):

@@ -2,12 +2,13 @@
 Test your code of "BIT Online coding homework" more easily and conveniently!
 
 ## Install
-`pip install bit-online-code-helper`
+`pip install bit-online-code-helper`\
+And you should confirm that `g++` command is available. For example, running `g++ -v` in the terminal to confirm.
 
 ## Feature
 With this, you can test and commit your code which use only **2 seconds** totally:
 1. Save your code in the editor (Ctrl + S)
-2. Switch to opened cmd or PowerShell window (Alt + Tab)
+2. Switch to show cmd or PowerShell window (Alt + Tab)
 3. Press "↑" on your keyboard to automatically repeat your last test command
 4. Press "Enter" on your keyboard, wait for test result!
 
@@ -30,7 +31,7 @@ bch -o [bit_online_problem_url] [source_file_url]
 bch -lo [bit_online_problem_url] [source_file_url]
 
 # e.g.
-# bch -lo "http://online.bit.edu.cn/moodle/mod/programming/view.php?id=32165" "E:\coding\1.c"
+# bch -lo "http://lexue.bit.edu.cn/mod/programming/view.php?id=32165" "E:\coding\1.c"
 ```
 
 ## TODO
